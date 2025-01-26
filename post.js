@@ -9,13 +9,13 @@ const agent = new AtpAgent({
   async function main() {
     await agent.login({ identifier: process.env.BLUESKY_USERNAME, password: process.env.BLUESKY_PASSWORD})
     await agent.post({
-        text: "🙂",
+        text: "Hello, World!",
         langs: ["en-US"],
         createdAt: new Date().toISOString()
     
     });
     console.log("Just posted!")
-}
+}  
 
 main();
   
