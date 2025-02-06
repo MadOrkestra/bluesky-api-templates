@@ -91,5 +91,4 @@ async function postImage(color, pngBuffer) {
 let color = randomHexColor();
 let pngBuffer = createImage(color);
 
-console.log(color);
 postImage(color, pngBuffer);
