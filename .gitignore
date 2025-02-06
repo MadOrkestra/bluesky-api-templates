@@ -1,5 +1,7 @@
 node_modules
+cache
 .env
 !.env.example
 
 .DS_Store
+posts.json

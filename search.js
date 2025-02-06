@@ -31,43 +31,45 @@ async function searchPosts(keyword) {
   const since = lastMonth.toISOString(); // 'YYYY-MM-DD'
   const until = now.toISOString(); // 'YYYY-MM-DD'
 
+  console.log(since);
+  console.log(until);
   let count = 0;
-  let cursor = null;
+  let cursor = 0;
   let hasMore = true;
+  const posts = [];
 
-  //   while (hasMore) {
-  try {
-    const response = await agent.app.bsky.feed.searchPosts({
-      q: keyword,
-      // sort: "latest",
-      // since,
-      // until,
-      limit: 100,
-      // cursor,
-    });
+  while (hasMore) {
+    try {
+      const response = await agent.app.bsky.feed.searchPosts({
+        q: keyword,
+        // sort: "latest",
+        since,
+        until,
+        limit: 100,
+        cursor: cursor,
+      });
 
-    console.log(response);
+      console.log(`Fetched ${response.data.posts.length} posts`, cursor);
+      posts.push(response.data.posts);
+      count += response.data.posts.length;
 
-    const posts = response.data.posts;
-    count += posts.length;
-
-    // save posts to a file
-    fs.writeFile("posts.json", JSON.stringify(posts, null, 2), (err) => {
-      if (err) throw err;
-      console.log("Posts saved to posts.json");
-    });
-
-    cursor = response.data.cursor;
-    hasMore = !!cursor;
-  } catch (error) {
-    console.error("Error fetching posts:", error.response?.data || error);
-    //break;
+      cursor = response.data.cursor;
+      hasMore = !!cursor;
+    } catch (error) {
+      console.error("Error fetching posts:", error.response?.data || error);
+      break;
+    }
   }
-  //   }
 
   console.log(
     `Number of posts containing "${keyword}" in the last month: ${count}`
   );
+
+  // save posts to a file
+  fs.writeFile("posts.json", JSON.stringify(posts, null, 2), (err) => {
+    if (err) throw err;
+    console.log("Posts saved to posts.json");
+  });
 }
 
 const keyword = process.argv[2];
